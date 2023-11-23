@@ -5,7 +5,7 @@ require 'recipe/symfony.php';
 
 // Config
 
-set('repository', '');
+set('repository', 'https://github.com/bizlab63/bizlab-backend.git');
 
 add('shared_files', []);
 add('shared_dirs', []);
