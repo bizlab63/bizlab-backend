@@ -64,7 +64,7 @@ class ProjectController extends AbstractController
         $this->auth = $jwt->validate($this->user_id, $this->token);
     }
 
-    #[Route('/api/company/create', name: 'create_company', methods: ['POST'])]
+    #[Route('/api/project/create', name: 'create_project', methods: ['POST'])]
     #[Response(
         response: 200,
         description: 'Returns an array with code field. Everything\'s fine.',
@@ -151,7 +151,7 @@ class ProjectController extends AbstractController
 
                 $this->redis->set('project:all:' . $owner, json_encode($data));
 
-                return new JsonResponse([], 200);
+                return new JsonResponse(['code' => 'true'], 200);
             } else {
                 return new JsonResponse(['code' => 'BC2'], 400);
             }
@@ -160,7 +160,7 @@ class ProjectController extends AbstractController
         }
     }
 
-    #[Route('/api/company/all', name: 'read_all_companies', methods: 'POST')]
+    #[Route('/api/project/all', name: 'read_all_projects', methods: 'POST')]
     #[Response(
         response: 200,
         description: 'Returns an array with code field. Everything\'s fine.',
@@ -227,7 +227,7 @@ class ProjectController extends AbstractController
         }
     }
 
-    #[Route('/api/company/one', name: 'read_one_company', methods: 'POST')]
+    #[Route('/api/project/one', name: 'read_one_project', methods: 'POST')]
     #[Response(
         response: 200,
         description: 'Returns an array with code field. Everything\'s fine.',
@@ -303,7 +303,7 @@ class ProjectController extends AbstractController
         }
     }
 
-    #[Route('/api/company/update', name: 'update_company', methods: 'POST')]
+    #[Route('/api/project/update', name: 'update_project', methods: 'POST')]
     #[Response(
         response: 200,
         description: 'Returns an array with code field. Everything\'s fine.',
@@ -406,7 +406,7 @@ class ProjectController extends AbstractController
         }
     }
 
-    #[Route('/api/company/delete', name: 'delete_company', methods: 'POST')]
+    #[Route('/api/project/delete', name: 'delete_project', methods: 'POST')]
     #[Response(
         response: 200,
         description: 'Returns an array with code field. Everything\'s fine.',
@@ -482,7 +482,7 @@ class ProjectController extends AbstractController
         }
     }
 
-    #[Route('/api/company/select_plan', name: 'select_company_plan', methods: 'POST')]
+    #[Route('/api/project/select_plan', name: 'select_project_plan', methods: 'POST')]
     #[Response(
         response: 200,
         description: 'Returns an array with code field. Everything\'s fine.',
@@ -567,7 +567,7 @@ class ProjectController extends AbstractController
         }
     }
 
-    #[Route('/api/company/add_contributor', name: 'add_company_contributor', methods: 'POST')]
+    #[Route('/api/project/add_contributor', name: 'add_project_contributor', methods: 'POST')]
     #[Response(
         response: 200,
         description: 'Returns an array with code field. Everything\'s fine.',
