@@ -6,15 +6,8 @@ use App\Entity\Project;
 use App\Entity\User;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Nelmio\ApiDocBundle\Annotation\Model;
-use OpenApi\Attributes\Items;
-use OpenApi\Attributes\JsonContent;
-use OpenApi\Attributes\Parameter;
-use OpenApi\Attributes\Property;
-use OpenApi\Attributes\Response;
-use OpenApi\Attributes\Schema;
-use OpenApi\Attributes\Tag;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -40,7 +33,15 @@ class ProjectController extends AbstractController
 
     public function __construct(RequestStack $requestStack)
     {
-        $this->redis = new Client();
+        $dotenv = new Dotenv();
+        $dotenv->load(__DIR__ .'/../../.env');
+
+        $this->redis = new Client([
+            'host' => '109.172.90.152',
+            'port' => '6379',
+            'username' => 'root',
+            'password' => 'YanSvin2007'
+        ]);
         $this->serializer = new Serializer(
             [
                 new ArrayDenormalizer(),
@@ -65,64 +66,6 @@ class ProjectController extends AbstractController
     }
 
     #[Route('/api/project/create', name: 'create_project', methods: ['POST'])]
-    #[Response(
-        response: 200,
-        description: 'Returns an array with code field. Everything\'s fine.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Response(
-        response: 400,
-        description: 'Returns an array with code field. Something is wrong with the data.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Response(
-        response: 401,
-        description: 'Returns an array with code field. The user has not been authenticated.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Parameter(
-        name: 'name',
-        description: 'The field contains company name',
-        in: 'path',
-        required: true,
-        schema: new Schema(type: 'string')
-    )]
-    #[Parameter(
-        name: 'domain',
-        description: 'The field contains company domain',
-        in: 'path',
-        required: true,
-        schema: new Schema(type: 'string')
-    )]
-    #[Parameter(
-        name: 'user_id',
-        description: 'The field contains user id',
-        in: 'cookie',
-        required: true,
-        schema: new Schema(type: 'string')
-    )]
-    #[Tag(name: 'Company')]
     public function create(Request $request, EntityManagerInterface $manager): JsonResponse
     {
         if ($this->auth) {
@@ -161,51 +104,6 @@ class ProjectController extends AbstractController
     }
 
     #[Route('/api/project/all', name: 'read_all_projects', methods: 'POST')]
-    #[Response(
-        response: 200,
-        description: 'Returns an array with code field. Everything\'s fine.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string'),
-                    new Property(property: 'data', type: 'array', items: new Items(ref: new Model(type: Project::class)))
-                ]
-            )
-        )
-    )]
-    #[Response(
-        response: 400,
-        description: 'Returns an array with code field. Something is wrong with the data.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Response(
-        response: 401,
-        description: 'Returns an array with code field. The user has not been authenticated.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Parameter(
-        name: 'user_id',
-        description: 'The field contains user id',
-        in: 'cookie',
-        required: true,
-        schema: new Schema(type: 'string')
-    )]
-    #[Tag(name: 'Company')]
     public function readAll(Request $request, EntityManagerInterface $manager): JsonResponse
     {
         if ($this->auth) {
@@ -228,58 +126,6 @@ class ProjectController extends AbstractController
     }
 
     #[Route('/api/project/one', name: 'read_one_project', methods: 'POST')]
-    #[Response(
-        response: 200,
-        description: 'Returns an array with code field. Everything\'s fine.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string'),
-                    new Property(property: 'data', ref: new Model(type: Project::class))
-                ]
-            )
-        )
-    )]
-    #[Response(
-        response: 400,
-        description: 'Returns an array with code field. Something is wrong with the data.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Response(
-        response: 401,
-        description: 'Returns an array with code field. The user has not been authenticated.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Parameter(
-        name: 'id',
-        description: 'The field contains company id',
-        in: 'path',
-        required: true,
-        schema: new Schema(type: 'string')
-    )]
-    #[Parameter(
-        name: 'user_id',
-        description: 'The field contains user id',
-        in: 'cookie',
-        required: true,
-        schema: new Schema(type: 'string')
-    )]
-    #[Tag(name: 'Company')]
     public function readOne(Request $request, EntityManagerInterface $manager): JsonResponse
     {
         if ($this->auth) {
@@ -304,71 +150,6 @@ class ProjectController extends AbstractController
     }
 
     #[Route('/api/project/update', name: 'update_project', methods: 'POST')]
-    #[Response(
-        response: 200,
-        description: 'Returns an array with code field. Everything\'s fine.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Response(
-        response: 400,
-        description: 'Returns an array with code field. Something is wrong with the data.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Response(
-        response: 401,
-        description: 'Returns an array with code field. The user has not been authenticated.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Parameter(
-        name: 'id',
-        description: 'The field contains company id',
-        in: 'path',
-        required: true,
-        schema: new Schema(type: 'string')
-    )]
-    #[Parameter(
-        name: 'name',
-        description: 'The field contains company name',
-        in: 'path',
-        required: true,
-        schema: new Schema(type: 'string')
-    )]
-    #[Parameter(
-        name: 'domain',
-        description: 'The field contains company domain',
-        in: 'path',
-        required: true,
-        schema: new Schema(type: 'string')
-    )]
-    #[Parameter(
-        name: 'user_id',
-        description: 'The field contains user id',
-        in: 'cookie',
-        required: true,
-        schema: new Schema(type: 'string')
-    )]
-    #[Tag(name: 'Company')]
     public function update(Request $request, EntityManagerInterface $manager): JsonResponse
     {
         if ($this->auth) {
@@ -407,57 +188,6 @@ class ProjectController extends AbstractController
     }
 
     #[Route('/api/project/delete', name: 'delete_project', methods: 'POST')]
-    #[Response(
-        response: 200,
-        description: 'Returns an array with code field. Everything\'s fine.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Response(
-        response: 400,
-        description: 'Returns an array with code field. Something is wrong with the data.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Response(
-        response: 401,
-        description: 'Returns an array with code field. The user has not been authenticated.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Parameter(
-        name: 'id',
-        description: 'The field contains company id',
-        in: 'path',
-        required: true,
-        schema: new Schema(type: 'string')
-    )]
-    #[Parameter(
-        name: 'user_id',
-        description: 'The field contains user id',
-        in: 'cookie',
-        required: true,
-        schema: new Schema(type: 'string')
-    )]
-    #[Tag(name: 'Company')]
     public function delete(Request $request, EntityManagerInterface $manager): JsonResponse
     {
         if ($this->auth) {
@@ -483,64 +213,6 @@ class ProjectController extends AbstractController
     }
 
     #[Route('/api/project/select_plan', name: 'select_project_plan', methods: 'POST')]
-    #[Response(
-        response: 200,
-        description: 'Returns an array with code field. Everything\'s fine.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Response(
-        response: 400,
-        description: 'Returns an array with code field. Something is wrong with the data.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Response(
-        response: 401,
-        description: 'Returns an array with code field. The user has not been authenticated.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Parameter(
-        name: 'id',
-        description: 'The field contains company id',
-        in: 'path',
-        required: true,
-        schema: new Schema(type: 'string')
-    )]
-    #[Parameter(
-        name: 'plan',
-        description: 'The field contains plan id',
-        in: 'path',
-        required: true,
-        schema: new Schema(type: 'string')
-    )]
-    #[Parameter(
-        name: 'user_id',
-        description: 'The field contains user id',
-        in: 'cookie',
-        required: true,
-        schema: new Schema(type: 'string')
-    )]
-    #[Tag(name: 'Company')]
     public function selectPlan(Request $request, EntityManagerInterface $manager): JsonResponse
     {
         if ($this->auth) {
@@ -568,64 +240,6 @@ class ProjectController extends AbstractController
     }
 
     #[Route('/api/project/add_contributor', name: 'add_project_contributor', methods: 'POST')]
-    #[Response(
-        response: 200,
-        description: 'Returns an array with code field. Everything\'s fine.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Response(
-        response: 400,
-        description: 'Returns an array with code field. Something is wrong with the data.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Response(
-        response: 401,
-        description: 'Returns an array with code field. The user has not been authenticated.',
-        content: new JsonContent(
-            type: 'array',
-            items: new Items(
-                properties: [
-                    new Property(property: 'code', type: 'string')
-                ]
-            )
-        )
-    )]
-    #[Parameter(
-        name: 'id',
-        description: 'The field contains company id',
-        in: 'path',
-        required: true,
-        schema: new Schema(type: 'string')
-    )]
-    #[Parameter(
-        name: 'email',
-        description: 'The field contains user email',
-        in: 'path',
-        required: true,
-        schema: new Schema(type: 'string')
-    )]
-    #[Parameter(
-        name: 'user_id',
-        description: 'The field contains user id',
-        in: 'cookie',
-        required: true,
-        schema: new Schema(type: 'string')
-    )]
-    #[Tag(name: 'Company')]
     public function addContributor(Request $request, EntityManagerInterface $manager): JsonResponse
     {
         if ($this->auth) {
